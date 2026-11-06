@@ -15,7 +15,7 @@ The profiler connects to each database with a read-only account. It collects con
 | 3 | List the databases in `databases.csv` and run the profiler | Profiler machine |
 | 4 | Check the results and send them to Databricks | Profiler machine |
 
-Optional helper scripts for Steps 2 and 3a are described in Appendices A and B. All scripts are in the zip file we sent with this guide:
+Optional helper scripts for Steps 2 and 3a are described in Appendices A and B. **Download all scripts from GitHub:** https://github.com/karthy-jayaraman/oracle_lakebridge_profiler_non_cdb. On that page, click **Code → Download ZIP** and extract it into a folder on the profiler machine (this guide uses `C:\oracle_profiler` on Windows and `~/oracle_profiler` on Mac), or run `git clone https://github.com/karthy-jayaraman/oracle_lakebridge_profiler_non_cdb.git`. The scripts are:
 
 | File | Used in | What it does | Runs on |
 |---|---|---|---|
@@ -134,7 +134,7 @@ GRANT CREATE SESSION, SELECT_CATALOG_ROLE TO lakebridge_profiler;
 ```
 Use the same password in every database, so one password works for the whole run in Step 3. The password must meet your password policy (profile/verify function); avoid the double-quote character `"`. If your default profile expires or locks passwords, consider a profile that won't expire during the profiling window.
 
-> **Prefer a script?** To create the account in many databases at once, use `step2_optional_create_profiler_user.sh` from the zip file we sent. It's described in **Appendix A**.
+> **Prefer a script?** To create the account in many databases at once, use `step2_optional_create_profiler_user.sh` from the GitHub repository (see the top of this guide). It's described in **Appendix A**.
 
 ---
 
@@ -162,7 +162,7 @@ HRPRD,HRPRD,dbserver7.example.com,1521
 - List the **primary** of each database, not a standby.
 - To profile more databases later, add rows and run again; databases already profiled are skipped.
 
-> **Prefer a script?** `step3a_optional_write_databases_csv.sh` from the zip file writes these rows for every database running on a server. It's described in **Appendix B**.
+> **Prefer a script?** `step3a_optional_write_databases_csv.sh` from the GitHub repository writes these rows for every database running on a server. It's described in **Appendix B**.
 
 ### 3b. Run the profiler loop
 
@@ -203,7 +203,7 @@ Optional parameters:
 - `-DatabricksProfile <name>`: if you signed in with a named profile.
 - `-LbDebug`: more detail in the logs.
 
-If PowerShell blocks the script ("running scripts is disabled on this system"), allow it for the current window only:
+If PowerShell blocks the script ("running scripts is disabled on this system", or "... is not digitally signed" for scripts downloaded from GitHub), allow it for the current window only:
 ```powershell
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 ```
@@ -287,7 +287,7 @@ Databricks will send you a secure upload link. The archive contains no table dat
 
 **Both helper scripts (Appendices A and B) run on Linux database servers** as the `oracle` OS user, with `sqlplus` available. They aren't supported on AIX or Solaris. Copy the scripts (and `databases.csv` for Appendix A) to each server, for example with `scp` or WinSCP, and make them executable with `chmod +x`.
 
-`step2_optional_create_profiler_user.sh` (in the zip file) creates the account from Step 2 in every database in `databases.csv` whose instance runs on the server. Run it as the **oracle OS user** on each database server or RAC node, with a copy of `databases.csv`:
+`step2_optional_create_profiler_user.sh` (in the GitHub repository) creates the account from Step 2 in every database in `databases.csv` whose instance runs on the server. Run it as the **oracle OS user** on each database server or RAC node, with a copy of `databases.csv`:
 
 **Review first (dry run: prints the SQL, changes nothing):**
 ```bash
@@ -307,7 +307,7 @@ read -rs -p 'Profiler password: ' LB_ORACLE_PROFILER_PWD; echo; export LB_ORACLE
 
 ## Appendix B (optional): write databases.csv with a script
 
-`step3a_optional_write_databases_csv.sh` (in the zip file) lists the databases running on a server, in the `databases.csv` format. Run it as the **oracle OS user** on each database server or RAC node:
+`step3a_optional_write_databases_csv.sh` (in the GitHub repository) lists the databases running on a server, in the `databases.csv` format. Run it as the **oracle OS user** on each database server or RAC node:
 ```bash
 chmod +x step3a_optional_write_databases_csv.sh
 ./step3a_optional_write_databases_csv.sh > databases_$(hostname -s).csv
